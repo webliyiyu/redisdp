@@ -1,0 +1,5 @@
+### item/10001
+GET http://localhost:8081/item/10001
+
+### stock/10001
+GET http://localhost:8081/item/stock/10001

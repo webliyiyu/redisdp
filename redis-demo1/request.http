@@ -1,0 +1,5 @@
+### get/num
+GET http://localhost:8080/get/num
+
+### set/num
+GET http://localhost:8080/set/num/666
