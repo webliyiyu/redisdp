@@ -120,15 +120,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             user = createUserWithPhone(phone);
         }
 
-        // 7.保存用户信息到 redis中
+        // 7.保存用户信息到 redis 中
         // 7.1.随机生成token，作为登录令牌
+        /*toString(true): 123e4567e89b12d3a456426614174000
+        toString(false) 或 toString(): 123e4567-e89b-12d3-a456-426614174000*/
         String token = UUID.randomUUID().toString(true);
         // 7.2.将User对象转为HashMap存储 拷贝
         UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
         Map<String, Object> userMap = BeanUtil.beanToMap(userDTO, new HashMap<>(16),
                 CopyOptions.create()
+                        /*// 忽略空值
                         .setIgnoreNullValue(true)
-                        .setFieldValueEditor((fieldName, fieldValue) -> fieldValue.toString()));
+                        // 指定格式string
+                        .setFieldValueEditor((fieldName, fieldValue) -> fieldValue.toString()));*/
+                        .setIgnoreNullValue(true)
+                        .setFieldValueEditor((fieldName, fieldValue) -> fieldValue != null ? fieldValue.toString() : null));
         // 7.3.存储
         String tokenKey = LOGIN_USER_KEY + token;
         stringRedisTemplate.opsForHash().putAll(tokenKey, userMap);
@@ -216,6 +222,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 .phone(phone)
                 .nickName(USER_NICK_NAME_PREFIX + RandomUtil.randomString(10))
                 .build();
+        // TODO 保存用户
         save(user);
         return user;
     }

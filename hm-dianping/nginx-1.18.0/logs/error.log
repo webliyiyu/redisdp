@@ -2785,3 +2785,6 @@
 2023/04/19 15:15:55 [error] 22068#28984: *3 CreateFile() "D:\Developer\WGJ\Java_WorkSpace\redis\hm-dianping\nginx-1.18.0/html/hmdp/js/axios.min.map" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /js/axios.min.map HTTP/1.1", host: "localhost:8080"
 2023/04/19 15:16:01 [notice] 30192#34000: signal process started
 2024/04/24 11:56:50 [emerg] 13352#10332: CreateDirectory() "D:\DevelopSpace\redis-master\hm-dianping\nginx-1.18.0/temp/client_body_temp" failed (3: The system cannot find the path specified)
+2024/04/25 16:44:51 [emerg] 18352#17312: CreateDirectory() "D:\DevelopSpace\redis-master\hm-dianping\nginx-1.18.0/temp/client_body_temp" failed (3: The system cannot find the path specified)
+2024/04/25 16:49:10 [emerg] 12720#5384: CreateDirectory() "D:\DevelopSpace\redis-master\hm-dianping\nginx-1.18.0/temp/client_body_temp" failed (3: The system cannot find the path specified)
+2024/04/26 11:00:02 [emerg] 10836#6988: CreateDirectory() "D:\DevelopSpace\redis-master\hm-dianping\nginx-1.18.0/temp/client_body_temp" failed (3: The system cannot find the path specified)
