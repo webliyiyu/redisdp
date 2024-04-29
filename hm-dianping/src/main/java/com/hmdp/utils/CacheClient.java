@@ -47,9 +47,14 @@ public class CacheClient {
 
     public void setWithLogicalExpire(String key, Object value, Long time, TimeUnit unit) {
         // 设置逻辑过期
-        RedisData redisData = new RedisData();
-        redisData.setData(value);
-        redisData.setExpireTime(LocalDateTime.now().plusSeconds(unit.toSeconds(time)));
+//        RedisData redisData = new RedisData();
+//        redisData.setData(value);
+//        redisData.setExpireTime(LocalDateTime.now().plusSeconds(unit.toSeconds(time)));
+        RedisData redisData = RedisData
+                .builder()
+                .data(value)
+                .expireTime(LocalDateTime.now().plusSeconds(unit.toSeconds(time)))
+                .build();
         // 写入Redis
         stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(redisData));
     }

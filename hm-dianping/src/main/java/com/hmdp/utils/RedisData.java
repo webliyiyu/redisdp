@@ -1,5 +1,6 @@
 package com.hmdp.utils;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -17,7 +18,9 @@ import java.time.LocalDateTime;
  * @author WangGuojian
  */
 @Data
+@Builder
 public class RedisData {
+    // 过期时间
     private LocalDateTime expireTime;
     private Object data;
 }
