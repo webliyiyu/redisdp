@@ -42,6 +42,7 @@ public class CacheClient {
     }
 
     public void set(String key, Object value, Long time, TimeUnit unit) {
+        // 设置逻辑过期 永久有效
         stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(value), time, unit);
     }
 
@@ -53,6 +54,7 @@ public class CacheClient {
         RedisData redisData = RedisData
                 .builder()
                 .data(value)
+                // unit.toSeconds 秒
                 .expireTime(LocalDateTime.now().plusSeconds(unit.toSeconds(time)))
                 .build();
         // 写入Redis
@@ -75,10 +77,11 @@ public class CacheClient {
     public <R, ID> R queryWithPassThrough(
             String keyPrefix, ID id, Class<R> type, Function<ID, R> dbFallback, Long time, TimeUnit unit) {
         String key = keyPrefix + id;
-        // 1.从redis查询商铺缓存
+        // 1.从redis查询缓存
         String json = stringRedisTemplate.opsForValue().get(key);
         // 2.判断是否存在
         if (StrUtil.isNotBlank(json)) {
+            log.info("命中缓存{}", json);
             // 3.存在，直接返回
             return JSONUtil.toBean(json, type);
         }
@@ -89,6 +92,7 @@ public class CacheClient {
         }
 
         // 4.不存在，根据id查询数据库
+        // Shop shop = getById(id);
         R r = dbFallback.apply(id);
         // 5.不存在，返回错误
         if (r == null) {

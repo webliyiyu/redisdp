@@ -60,17 +60,21 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
     @Override
     public Result queryById(Long id) {
         // 解决缓存穿透
-//        Shop shop = cacheClient
-//                .queryWithPassThrough(CACHE_SHOP_KEY, id, Shop.class, this::getById, CACHE_SHOP_TTL, TimeUnit.MINUTES);
+        Shop shop = cacheClient
+                .queryWithPassThrough(CACHE_SHOP_KEY, id, Shop.class, this::getById, CACHE_SHOP_TTL, TimeUnit.MINUTES);
 
-        // 互斥锁解决缓存击穿
-        // Shop shop = cacheClient
-        //         .queryWithMutex(CACHE_SHOP_KEY, id, Shop.class, this::getById, CACHE_SHOP_TTL, TimeUnit.MINUTES);
+         // 互斥锁解决缓存击穿
+         Shop shop2 = cacheClient
+                 .queryWithMutex(CACHE_SHOP_KEY, id, Shop.class, this::getById, CACHE_SHOP_TTL, TimeUnit.MINUTES);
 
-        // 逻辑过期解决缓存击穿
-        // Shop shop = cacheClient
-        //         .queryWithLogicalExpire(CACHE_SHOP_KEY, id, Shop.class, this::getById, 20L, TimeUnit.SECONDS);
-
+         // 逻辑过期解决缓存击穿
+         Shop shop3 = cacheClient
+                 .queryWithLogicalExpire(CACHE_SHOP_KEY, id, Shop.class, this::getById, 20L, TimeUnit.SECONDS);
+        if (shop == null){
+            log.error("店铺不存在{}", id);
+            return Result.fail("店铺不存在");
+        }
+        return Result.ok(shop);
 
 /*
         // 从Redis查询店铺缓存
@@ -102,12 +106,12 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
         stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(shop), CACHE_SHOP_TTL, TimeUnit.MINUTES);
 */
         // 利用逻辑过期解决缓存击穿
-        Shop shop = queryWithLogicalExpire(id);
+        /*Shop shop = queryWithLogicalExpire(id);
         if (shop == null) {
             return Result.fail("店铺不存在");
         }
         // 7.返回
-        return Result.ok(shop);
+        return Result.ok(shop);*/
     }
 
     /**
@@ -188,6 +192,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
      */
     private boolean tryLock(String lockKey) {
         boolean flag = stringRedisTemplate.opsForValue().setIfAbsent(lockKey, "1", 10, TimeUnit.SECONDS);
+        // 如果 flag 为 true，则返回 true；否则返回 false
         return BooleanUtil.isTrue(flag);
     }
 
