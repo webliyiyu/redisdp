@@ -23,7 +23,7 @@ public class WebExceptionAdvice {
 
     @ExceptionHandler(RuntimeException.class)
     public Result handleRuntimeException(RuntimeException e) {
-        log.error(e.toString(), e);
+        log.error("服务器异常", e);
         return Result.fail("服务器异常");
     }
 }

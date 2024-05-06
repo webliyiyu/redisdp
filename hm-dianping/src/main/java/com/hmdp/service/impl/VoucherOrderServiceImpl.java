@@ -28,6 +28,8 @@
 //import java.util.List;
 //import java.util.Map;
 //import java.util.Objects;
+//import java.util.concurrent.ArrayBlockingQueue;
+//import java.util.concurrent.BlockingQueue;
 //import java.util.concurrent.ExecutorService;
 //import java.util.concurrent.Executors;
 //
@@ -75,7 +77,7 @@
 //        SEC_KILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 //    }
 //
-//    private class VoucherOrderHandler implements Runnable {
+//    private class VoucherOrderHandler1 implements Runnable {
 //        private final String queueName = "stream.orders";
 //
 //        @Override
@@ -235,7 +237,6 @@
 //        save(voucherOrder);
 //    }
 //
-//   /*
 //
 //    private BlockingQueue<VoucherOrder> orderTasks = new ArrayBlockingQueue<>(1024 * 1024);
 //    private class VoucherOrderHandler implements Runnable{
@@ -254,7 +255,7 @@
 //        }
 //    }
 //
-//    @Override
+//    /*@Override
 //    public Result seckillVoucher(Long voucherId) {
 //        Long userId = UserHolder.getUser().getId();
 //        // 1.执行lua脚本
@@ -285,7 +286,7 @@
 //        // 4.返回订单id
 //        return Result.ok(orderId);
 //    }*/
-//    /*@Override
+//   /* @Override
 //    public Result seckillVoucher(Long voucherId) {
 //        // 1.查询优惠券
 //        SecKillVoucher voucher = seckillVoucherService.getById(voucherId);
@@ -326,10 +327,10 @@
 //            // 释放锁
 //            lock.unlock();
 //        }
-//    }*/
+//    }
+//*/
 //
-//
-//    /*@Transactional
+//   /* @Transactional
 //    public Result createVoucherOrder(Long voucherId) {
 //        // 5.一人一单
 //        Long userId = UserHolder.getUser().getId();

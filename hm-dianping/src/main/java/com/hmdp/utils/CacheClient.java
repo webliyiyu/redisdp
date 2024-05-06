@@ -88,17 +88,20 @@ public class CacheClient {
         // 判断命中的是否是空值
         if (json != null) {
             // 返回一个错误信息
+            log.warn("命中空值缓存{}", json);
             return null;
         }
 
         // 4.不存在，根据id查询数据库
+        // 从数据库或者其他数据源中获取特定的数据
         // Shop shop = getById(id);
         R r = dbFallback.apply(id);
         // 5.不存在，返回错误
         if (r == null) {
             // 将空值写入redis
             stringRedisTemplate.opsForValue().set(key, "", CACHE_NULL_TTL, TimeUnit.MINUTES);
-            // 返回错误信息
+            //
+            log.warn("将空值写入redis{}", r);
             return null;
         }
         // 6.存在，写入redis
