@@ -1,8 +1,12 @@
 package com.buercorp.wangyu.pojo;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.ibatis.type.Alias;
+
+import java.io.Serializable;
 
 /**
  * ClassName: User
@@ -19,7 +23,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
-    private String name;
+@Alias(value = "user")
+@Builder
+public class User implements Serializable {
+    // 开启Spring Redis Cache时，加入序列化
+    private static final long serialVersionUID = -4947062488310146862L;
+    private Long id;
+    private String userName;
     private Integer age;
 }

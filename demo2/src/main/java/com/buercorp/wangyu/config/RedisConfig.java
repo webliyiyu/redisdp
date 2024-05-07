@@ -47,12 +47,16 @@ package com.buercorp.wangyu.config;//package com.buercorp.wangyu.config;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
@@ -65,6 +69,7 @@ import java.util.Map;
  * @author Administrator
  */
 @Configuration
+@EnableCaching
 @Slf4j
 public class RedisConfig extends CachingConfigurerSupport {
 
@@ -91,12 +96,21 @@ public class RedisConfig extends CachingConfigurerSupport {
                 // 默认没有特殊指定的缓存，设置失效时间为1天
                 .entryTtl(Duration.ofDays(1))
                 // 在缓存名称前加上前缀
-                .computePrefixWith(cacheName -> "default:" + cacheName);
+                .computePrefixWith(cacheName -> "default:" + cacheName)
+                .disableCachingNullValues()
+                // 设置value的序列化方式
+                .serializeValuesWith(RedisSerializationContext.
+                        SerializationPair
+                        .fromSerializer(new GenericJackson2JsonRedisSerializer()))
+                // 设置key的序列化方式
+                .serializeKeysWith(RedisSerializationContext.
+                        SerializationPair
+                        .fromSerializer(RedisSerializer.string()));
         log.info("设置redis缓存的默认失效时间，失效时间默认为：{}天", defaultCacheConfig.getTtl().toDays());
         // 针对不同cacheName，设置不同的失效时间，map的key是缓存名称（注解设定的value/cacheNames），value是缓存的失效配置
         Map<String, RedisCacheConfiguration> initialCacheConfiguration = new HashMap<String, RedisCacheConfiguration>(8);
         // 设定失效时间为1小时
-        initialCacheConfiguration.put("user", getDefaultSimpleConfiguration().entryTtl(Duration.ofHours(1)));
+        initialCacheConfiguration.put("redisCache", getDefaultSimpleConfiguration().entryTtl(Duration.ofHours(1)));
         // 设定失效时间为10分钟
         initialCacheConfiguration.put("userName", getDefaultSimpleConfiguration().entryTtl(Duration.ofMinutes(10)));
         // 设定失效时间为12小时
@@ -115,7 +129,8 @@ public class RedisConfig extends CachingConfigurerSupport {
      * @return 返回缓存配置信息
      */
     private RedisCacheConfiguration getDefaultSimpleConfiguration() {
-        return RedisCacheConfiguration.defaultCacheConfig().computePrefixWith(cacheName -> cacheName + ":");
+        return RedisCacheConfiguration.defaultCacheConfig()
+                .computePrefixWith(cacheName -> cacheName + ":");
     }
 
 }
