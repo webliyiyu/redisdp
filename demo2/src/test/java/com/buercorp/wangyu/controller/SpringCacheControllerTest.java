@@ -16,6 +16,6 @@ class SpringCacheControllerTest {
     @Test
     void springCacheTest() {
         springCacheController.SpringCache();
-        log.info("test");
+        log.info("test类执行");
     }
 }

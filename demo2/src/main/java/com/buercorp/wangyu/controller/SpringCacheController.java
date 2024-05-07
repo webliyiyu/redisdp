@@ -14,10 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class SpringCacheController {
     @Autowired
     public SpringCacheService springCacheService;
-    private long userId = 202;
+    private long userId = 33333;
     public void SpringCache() {
         springCacheService.testString(userId);
-        log.info("执行了：{}", springCacheService.testString(userId));
     }
 
 }

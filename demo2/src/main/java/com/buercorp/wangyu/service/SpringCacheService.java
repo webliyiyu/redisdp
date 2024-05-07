@@ -14,14 +14,10 @@ public class SpringCacheService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    @Cacheable(value = "name", key = "'user:' + #userId")
+    @Cacheable(value = "userName", key = "#userId", condition = "#userId != null")
     public String testString(long userId) {
-        // 写入一条 String 数据
-        stringRedisTemplate.opsForValue().set("user:" + userId, "xiao虎哥");
-        // 获取 String 数据
-        Object name = stringRedisTemplate.opsForValue().get("user:" + userId);
-        log.info("获取 String 数据 = {}", name);
-        return (String) name;
+        log.info("缓存中没有执行的业务：{}", userId);
+        return "22222";
     }
 
 
