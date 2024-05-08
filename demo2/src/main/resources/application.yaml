@@ -9,10 +9,11 @@ spring:
         username: root
         password: 123456
     cache:
-#        type: redis
+        type: redis
+    data:
         redis:
             host: 127.0.0.1
-            port: 10000
+            port: 6666
 #           允许缓存null值
             cache-null-values: true
 #        password: 123321

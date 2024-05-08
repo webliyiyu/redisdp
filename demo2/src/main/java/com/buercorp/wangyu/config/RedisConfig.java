@@ -73,16 +73,17 @@ import java.util.Map;
 @Slf4j
 public class RedisConfig extends CachingConfigurerSupport {
 
-    @Bean
-    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
-        log.info("Redis的KeySerializer设置为：{}", StringRedisSerializer.class);
-        // 默认的Key序列化器为：JdkSerializationRedisSerializer
-        // 将key的序列化器改为StringRedisSerializer，以便可以在Redis的key设置什么就显示什么，不进行转化
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setConnectionFactory(connectionFactory);
-        return redisTemplate;
-    }
+//    @Bean
+//    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+//        RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
+//        log.info("Redis的KeySerializer设置为：{}", StringRedisSerializer.class);
+//        // 默认的Key序列化器为：JdkSerializationRedisSerializer
+//        // 将key的序列化器改为StringRedisSerializer，以便可以在Redis的key设置什么就显示什么，不进行转化
+//        redisTemplate.setKeySerializer(new StringRedisSerializer());
+//        redisTemplate.setConnectionFactory(connectionFactory);
+//        return redisTemplate;
+//    }
+
 
     /**
      * 缓存管理
@@ -130,7 +131,16 @@ public class RedisConfig extends CachingConfigurerSupport {
      */
     private RedisCacheConfiguration getDefaultSimpleConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()
-                .computePrefixWith(cacheName -> cacheName + ":");
+                .computePrefixWith(cacheName -> cacheName + ":")
+                // 设置value的序列化方式
+                .serializeValuesWith(RedisSerializationContext.
+                        SerializationPair
+                        .fromSerializer(new GenericJackson2JsonRedisSerializer()))
+                // 设置key的序列化方式
+                .serializeKeysWith(RedisSerializationContext.
+                        SerializationPair
+                        .fromSerializer(RedisSerializer.string()));
     }
 
 }
+

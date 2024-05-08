@@ -59,9 +59,10 @@ public class UserCacheServiceImpl implements UserCacheService {
     @Override
     @Transactional
     @CacheEvict(key = "'redis_user_' + #id")
-    public void updateUserName(Long id, String userName) {
+    public void updateUserName(Long id, String userName, Integer age) {
         User user = userMapper.getUserById(id);
         user.setUserName(userName);
+        user.setAge(age);
         userMapper.updateUserById(user);
         log.info("CacheEvict通过定义的键移除相应的缓存{}", user);
     }

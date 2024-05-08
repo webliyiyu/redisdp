@@ -55,8 +55,8 @@ public class UserCacheController {
      */
     @RequestMapping("/updateUserName")
     @ResponseBody
-    public CommonResult updateUserName(Long id, String userName) {
-        userCacheService.updateUserName(id, userName);
+    public CommonResult updateUserName(Long id, String userName, Integer age) {
+        userCacheService.updateUserName(id, userName, age);
         log.info("根据Id：{}查找用户并更新username：{}", id, userName);
         return CommonResult.success();
     }
